@@ -1,0 +1,35 @@
+* Polymorph
+
+A tiny, easy to use functional piping library.
+
+** Why
+This library is an experiment, meant to explore a functional oriented approach to designing algorithms.
+Functional-style piping converts complex polymorphic transformations into sequential steps, thus resulting in clean and easy to understand steps, compared to large, obfuscated loop constructs. 
+   
+*** Example
+*Problem:*
+You are given a collection of people, and are tasked with:
+1. Find all males that are older than 30
+2. Remember their original indexes in the collection
+3. Remove information, so only the original information and their names are kept
+3. Store and print the resulting sub-collection
+   
+Initially, this problem would be solveable by simply iterating through the collection of people.
+Then for each person, check if they fit the criteria, and push them to an outside storage with the index.
+Afterwards, iterate through the new collection, printing the required information, easy.
+But suddently, a new criteria is found for the algorithm, maybe another algorithm needs to be created that does the same, but looks for females under 50 instead.
+A simple solution to the problem suddently grows in complexity, deviates in requirements and are now considered really complex to maintain as you would need to enforce new tests to ensure the logic still works.
+
+The solution using composition of simple filters and transforms:
+#+begin_src cpp
+const auto indexed_males_over_30 = people >>= polymorph::enumerate()
+	                                      >>= polymorph::filter(is_male)
+	                                      >>= polymorph::filter(is_over_30)
+	                                      >>= polymorph::transform(take_indexed_name)
+	                                      >>= polymorph::transform(stringify_indexed_name);
+
+indexed_males_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
+#+end_src
+
+When a new sorting requirement is set, or a slight deviation in logic occours, changing the original algorithm becomes trivial.
+Just add another transform, modify the filters, and you are good to go. 
