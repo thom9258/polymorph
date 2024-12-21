@@ -23,12 +23,5 @@ set(polymorph_INCLUDES
   ${polymorph_INCLUDES_DIR}/transform.hpp
 )
 
-add_library(${PROJECT_NAME} STATIC)
-
-target_include_directories(${PROJECT_NAME} PUBLIC polymorph_INCLUDES)
-
-target_include_directories(${PROJECT_NAME}
-  PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-)
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE polymorph_INCLUDES)
