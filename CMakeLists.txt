@@ -24,4 +24,4 @@ set(polymorph_INCLUDES
 )
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE polymorph_INCLUDES)
+target_include_directories(${PROJECT_NAME} INTERFACE polymorph_INCLUDES_DIR)
