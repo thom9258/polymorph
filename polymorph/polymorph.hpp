@@ -1,0 +1,8 @@
+#include "assign.hpp"
+#include "detail.hpp"
+#include "enumerate.hpp"
+#include "filter.hpp"
+#include "pipe.hpp"
+#include "stream.hpp"
+#include "tee.hpp"
+#include "transform.hpp"

@@ -1,9 +1,20 @@
 cmake_minimum_required(VERSION 3.12)
 
+# Libary creation resource:
+# https://dominikberner.ch/cmake-interface-lib/
+#
 # Compile this library:
 # cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/your/installation/path
 # note that a default CMAKE_INSTALL_PREFIX is used if none is specified
 # cmake --build . --config Release --target install -- -j $(nproc)
+#
+# To include this library in anothe cmake project:
+#find_package (polymorph
+#    CONFIG REQUIRED
+#    PATHS "../build/install" NO_DEFAULT_PATH)
+#
+#target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+
 
 project(polymorph
   VERSION 0.1.0
