@@ -1,7 +1,7 @@
 #pragma once
 
-#include "types.hpp"
-#include "piping.hpp"
+#include "detail.hpp"
+#include "pipe.hpp"
 
 namespace polymorph
 {
