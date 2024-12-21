@@ -7,14 +7,14 @@ namespace polymorph
 {
 	
 template <typename Seperator, typename Ender>
-class to_stream_t : public traits::pipe_tag
+class stream_t : public traits::pipe_tag
 {
 	std::ostream& os_;
 	Seperator seperator_;
 	Ender ender_;
 
 public:
-	explicit to_stream_t(std::ostream& os, Seperator&& seperator, Ender&& ender) 
+	explicit stream_t(std::ostream& os, Seperator&& seperator, Ender&& ender) 
 		: os_(os)
 		, seperator_(std::forward<Seperator>(seperator))
 		, ender_(std::forward<Ender>(ender))
@@ -37,20 +37,20 @@ public:
 	
 template <typename Seperator, typename Ender>
 [[nodiscard]] constexpr
-to_stream_t<Seperator, Ender>
-to_stream(std::ostream& os, Seperator&& seperator, Ender&& ender) noexcept
+stream_t<Seperator, Ender>
+stream(std::ostream& os, Seperator&& seperator, Ender&& ender) noexcept
 {
-	return to_stream_t<Seperator, Ender>(os, 
+	return stream_t<Seperator, Ender>(os, 
 										 std::forward<Seperator>(seperator),
 										 std::forward<Ender>(ender));
 }
 	
 template <typename Seperator>
 [[nodiscard]] constexpr
-to_stream_t<Seperator, decltype("")>
-to_stream(std::ostream& os, Seperator&& seperator) noexcept
+stream_t<Seperator, decltype("")>
+stream(std::ostream& os, Seperator&& seperator) noexcept
 {
-	return to_stream_t<Seperator, decltype("")>(os, 
+	return stream_t<Seperator, decltype("")>(os, 
 												std::forward<Seperator>(seperator),
 												std::forward<decltype("")>(""));
 }
