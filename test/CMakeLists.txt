@@ -7,32 +7,29 @@ set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# find_package (polymorph
-# CONFIG REQUIRED
-# PATHS "../build/install" NO_DEFAULT_PATH
-# )
-#
-# add_executable(${PROJECT_NAME} test.cpp)
-# target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
-
-
-# add_subdirectory(../ 3rdparty/polymorph)
-# add_executable(${PROJECT_NAME} test.cpp)
-# target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+include(FetchContent)
 
 #-------------------------------------------------------------------------
 # Fetch Polymorph
 # ------------------------------------------------------------------------
-include(FetchContent)
+
 message(STATUS "Including Polymorph")
-FetchContent_Declare(
-polymorph
-GIT_REPOSITORY git@github.com:thom9258/polymorph.git
-GIT_TAG main
-GIT_SHALLOW TRUE
-GIT_PROGRESS TRUE
+FetchContent_Declare(polymorph
+  GIT_REPOSITORY git@github.com:thom9258/polymorph.git
+  GIT_TAG main
+  GIT_SHALLOW TRUE
+  GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(polymorph)
 
+message(STATUS "Including Libtester")
+FetchContent_Declare(libtester
+  GIT_REPOSITORY git@github.com:thom9258/libtester.git
+  GIT_TAG main
+  GIT_SHALLOW TRUE
+  GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(libtester)
+
 add_executable(${PROJECT_NAME} test.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE polymorph)
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph libtester)

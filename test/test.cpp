@@ -1,3 +1,4 @@
+#include <libtester/libtester.h>
 #include <polymorph/polymorph.hpp>
 
 #include <sstream>
@@ -5,7 +6,6 @@
 #include <vector>
 #include <string>
 
-#include "libtester-2.0.h"
 
 const std::vector<int> numbers = {1,2,3,4,5,6};
 
@@ -264,8 +264,18 @@ void test_assign()
 
 	TEST(compare_vectors(even, std::vector<int>{6, 8, 10}));
 	TEST(compare_vectors(odd, std::vector<int>{7, 9, 11}));
-
 }
+
+void test_take()
+{
+	numbers >>= polymorph::stream(std::cout, " ", "\n");
+	
+	const auto half = numbers >>= polymorph::take(numbers.size()/2)
+		                      >>= polymorph::stream(std::cout, " ", "\n");
+
+	TEST(compare_vectors(half, std::vector<int>{1, 2, 3}));
+}
+
 
 int main(int argc, char** argv)
 {
@@ -281,6 +291,8 @@ int main(int argc, char** argv)
     TEST_UNIT(test_tee());
     TEST_UNIT(test_partition());
     TEST_UNIT(test_assign());
+    TEST_UNIT(test_take());
+
     ltcontext_end();
 	return 0;
 }
