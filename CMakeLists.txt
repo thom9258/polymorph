@@ -26,4 +26,8 @@ set(polymorph_INCLUDES
 )
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE polymorph_INCLUDE_DIRS)
+target_include_directories(${PROJECT_NAME}
+  INTERFACE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+)
