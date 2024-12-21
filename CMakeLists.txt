@@ -10,18 +10,20 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -ggdb")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(polymorph_INCLUDES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/polymorph)
+set(polymorph_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/polymorph)
 
 set(polymorph_INCLUDES
-  ${polymorph_INCLUDES_DIR}/assign.hpp
-  ${polymorph_INCLUDES_DIR}/detail.hpp
-  ${polymorph_INCLUDES_DIR}/enumerate.hpp
-  ${polymorph_INCLUDES_DIR}/filter.hpp
-  ${polymorph_INCLUDES_DIR}/pipe.hpp
-  ${polymorph_INCLUDES_DIR}/stream.hpp
-  ${polymorph_INCLUDES_DIR}/tee.hpp
-  ${polymorph_INCLUDES_DIR}/transform.hpp
+  ${polymorph_INCLUDE_DIRS}/assign.hpp
+  ${polymorph_INCLUDE_DIRS}/detail.hpp
+  ${polymorph_INCLUDE_DIRS}/enumerate.hpp
+  ${polymorph_INCLUDE_DIRS}/filter.hpp
+  ${polymorph_INCLUDE_DIRS}/pipe.hpp
+  ${polymorph_INCLUDE_DIRS}/stream.hpp
+  ${polymorph_INCLUDE_DIRS}/tee.hpp
+  ${polymorph_INCLUDE_DIRS}/transform.hpp
+
+  ${polymorph_INCLUDES_DIR}/polymorph.hpp
 )
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE polymorph_INCLUDES_DIR)
+target_include_directories(${PROJECT_NAME} INTERFACE polymorph_INCLUDE_DIRS)
