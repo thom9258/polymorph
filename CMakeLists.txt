@@ -1,33 +1,78 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
+
+# Compile this library:
+# cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/your/installation/path
+# note that a default CMAKE_INSTALL_PREFIX is used if none is specified
+# cmake --build . --config Release --target install -- -j $(nproc)
+
+project(polymorph
+  VERSION 0.1.0
+  DESCRIPTION "Polymorph is a piping library designed as an alternative to for-loops."
+  HOMEPAGE_URL "https://github.com/thom9258/polymorph/"
+)
 
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-project(polymorph VERSION 0.1.0)
-
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -ggdb")
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(polymorph_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/polymorph)
-
-set(polymorph_INCLUDES
-  ${polymorph_INCLUDE_DIRS}/assign.hpp
-  ${polymorph_INCLUDE_DIRS}/detail.hpp
-  ${polymorph_INCLUDE_DIRS}/enumerate.hpp
-  ${polymorph_INCLUDE_DIRS}/filter.hpp
-  ${polymorph_INCLUDE_DIRS}/pipe.hpp
-  ${polymorph_INCLUDE_DIRS}/stream.hpp
-  ${polymorph_INCLUDE_DIRS}/tee.hpp
-  ${polymorph_INCLUDE_DIRS}/transform.hpp
-
-  ${polymorph_INCLUDES_DIR}/polymorph.hpp
-)
+include(GNUInstallDirs)
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME}
+# allows other projects add_subdirectory() this project
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME}) 
+
+set(polymorph_INCLUDE_DIR "polymorph")
+
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (
+	  CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install"
+      CACHE PATH "default install path" FORCE)
+endif()
+
+target_include_directories(${PROJECT_NAME} 
   INTERFACE
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/polymorph>"
+  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+)
+
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
+
+install(TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}_Targets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("polymorphConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+
+configure_package_config_file(
+  "${PROJECT_SOURCE_DIR}/cmake/polymorphConfig.cmake.in"
+  "${PROJECT_BINARY_DIR}/polymorphConfig.cmake"
+  INSTALL_DESTINATION
+  "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake"
+)
+
+install(
+  EXPORT ${PROJECT_NAME}_Targets
+  FILE ${PROJECT_NAME}Targets.cmake
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake"
+)
+
+install(
+  FILES
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+  DESTINATION
+  "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake"
+)
+
+install(
+  DIRECTORY ${PROJECT_SOURCE_DIR}/${polymorph_INCLUDE_DIR}
+  DESTINATION include
 )
