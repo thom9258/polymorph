@@ -34,12 +34,6 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 set(polymorph_INCLUDE_DIR "polymorph")
 
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set (
-	  CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install"
-      CACHE PATH "default install path" FORCE)
-endif()
-
 target_include_directories(${PROJECT_NAME} 
   INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"

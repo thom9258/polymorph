@@ -3,9 +3,81 @@
 A tiny, easy to use functional piping library.
 
 ** Why
-This library is an experiment, meant to explore a functional oriented approach to designing algorithms.
-Functional-style piping converts complex polymorphic transformations into sequential steps, thus resulting in clean and easy to understand steps, compared to large, obfuscated loop constructs. 
+This library explores a functional oriented approach to managing and modifying collections.
+'polymorph' provides a functional-style piping syntax, in order to express complex data transformation as sequential steps.
+The resulting code becomes clean and easy to understand, compared to large & obfuscated loop constructs by leveraging standardized higher-order functions that are highly composeable using simple sub-algorithms and predicates.
+
+A simple example, given a collection of people, collect the names of all males over 30 and print them.
+#+begin_src cpp
+const auto male_names_over_30 = people >>= polymorph::filter(is_male)
+                                       >>= polymorph::filter(is_over_30)
+                                       >>= polymorph::transform(take_name);
+
+male_names_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
+#+end_src
+
+** How to Install
    
+*** FetchContent_Declare
+For a quick setup, simply fetch using:
+
+#+begin_src cmake
+include(FetchContent)
+message(STATUS "Fetching polymorph")
+FetchContent_Declare(polymorph
+    GIT_REPOSITORY git@github.com:thom9258/polymorph.git
+    GIT_TAG main
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(polymorph)
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph)
+#+end_src
+
+*** add_subdirectory()
+Alternatively, the package can be cloned manually:
+
+#+begin_src bash
+cd path/to/your/project
+mkdir thirdparty
+cd thirdparty
+git clone git@github.com:thom9258/polymorph.git
+#+end_src
+
+Then in your CMakeLists.txt, add
+#+begin_src cmake
+add_subdirectory(../thirdparty/polymorph)
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+#+end_src
+
+*** find_package()
+
+the package can be installed by:
+#+begin_src bash
+cd path/to/thirdparty/libraries
+git clone git@github.com:thom9258/polymorph.git
+cd polymorph
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release --target install -- -j $(nproc)
+#+end_src
+
+alternatively, a custom install-prefix can be specified:
+#+begin_src bash
+cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/your/installation/path
+cmake --build . --config Release --target install -- -j $(nproc)
+#+end_src
+
+Then, in your CMakeLists.txt, the package can be found using:
+#+begin_src cmake
+find_package(polymorph
+    CONFIG REQUIRED
+    PATHS "../build/install" NO_DEFAULT_PATH)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+#+end_src
+
 *** Example
 *Problem:*
 You are given a collection of people, and are tasked with:
