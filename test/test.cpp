@@ -270,10 +270,18 @@ void test_take()
 {
 	numbers >>= polymorph::stream(std::cout, " ", "\n");
 	
-	const auto half = numbers >>= polymorph::take(numbers.size()/2)
-		                      >>= polymorph::stream(std::cout, " ", "\n");
-
+	const auto half = numbers >>= polymorph::take(3);
+	half >>= polymorph::stream(std::cout, " ", "\n");
 	TEST(compare_vectors(half, std::vector<int>{1, 2, 3}));
+	
+	const auto halfmult2 = numbers >>= polymorph::take(3)
+		                           >>= polymorph::transform(multiply2);
+	halfmult2 >>= polymorph::stream(std::cout, " ", "\n");
+	TEST(compare_vectors(halfmult2, std::vector<int>{2, 4, 6}));
+	
+	const auto more = numbers >>= polymorph::take(numbers.size()*2)
+		                      >>= polymorph::tee(polymorph::stream(std::cout, " ", "\n"));
+	TEST(compare_vectors(more, std::vector<int>{1, 2, 3, 4, 5, 6}));
 }
 
 

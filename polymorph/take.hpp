@@ -13,18 +13,18 @@ public:
 	explicit take_t(const size_t count) : count_(count) {}
 
     template<typename V>
-    constexpr decltype(auto) process(const V& v) const noexcept
+    auto process(const V& v) const noexcept
+		-> std::remove_cvref_t<V>
     {
-		V out{};
-		out.reserve(count_);
-		const auto taking = (count_ < v.size()) ? count_ : v.size();
-		for (size_t i = 0; i < taking; i++)
+		std::remove_cvref_t<V> out{};
+		out.reserve((count_ < v.size()) ? count_ : v.size());
+		for (size_t i = 0; i < out.size(); i++)
 			out.push_back(v[i]);
         return out;
     }
 };
 	
-[[nodiscard]] constexpr
+[[nodiscard]]
 take_t take(const size_t count) noexcept
 {
 	return take_t(count);
