@@ -14,9 +14,31 @@ You are given a collection of people, and are tasked with:
 3. Remove information, so only the original information and their names are kept
 3. Store and print the resulting sub-collection
    
-Initially, this problem would be solveable by simply iterating through the collection of people.
-Then for each person, check if they fit the criteria, and push them to an outside storage with the index.
-Afterwards, iterate through the new collection, printing the required information, easy.
+Initially, this problem would be solveable by simply iterating through the collection of people:
+#+begin_src cpp
+// PROBLEM: non-const temporary variable
+std::vector<indexed_person>> males_over_30{};
+// PROBLEM: error-prone usage of index
+for (size_t i = 0; i < people.size(); i++) {
+    // PROBLEM: conditional branching based on multiple-cases in if
+    if (!is_male(people[i]) && !is_over_30(people[i])))
+	    continue;
+    // PROBLEM: modification of values in another place
+	males_over_30.push_back({i, people[i]});
+	
+
+// PROBLEM: error-prone useage of index
+for (size_t i = 0; i < males_over_30.size(); i++) {
+    std::cout << stringify_indexed_name(males_over_30[i]);
+	// PROBLEM: manual handling to omit the trailing seperator
+	// PROBLEM: error-prone extensive logic using both index and size-based values
+	if (i < males_over_30.size()-1)
+	    << ", ";
+}
+// PROBLEM: multiple printing locations
+std::cout << "\n";
+#+end_src
+
 But suddently, a new criteria is found for the algorithm, maybe another algorithm needs to be created that does the same, but looks for females under 50 instead.
 A simple solution to the problem suddently grows in complexity, deviates in requirements and are now considered really complex to maintain as you would need to enforce new tests to ensure the logic still works.
 
@@ -32,4 +54,9 @@ indexed_males_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
 #+end_src
 
 When a new sorting requirement is set, or a slight deviation in logic occours, changing the original algorithm becomes trivial.
-Just add another transform, modify the filters, and you are good to go. 
+All you need to do is just add another transform, modify a filter, and you are good to go. 
+The code is by definiton also more explicit and self-documenting compared to a traditional iteration. You would be required to know the name of the function that iteration is inside of, or look for comments & documentation to explicitly tell you that we are reducing a collection into males over 30.
+With composed pipes, this becomes trivial, the code loudly explains that we are taking elements based on some criteria, and transforming them according to the functions provided.
+In addition to readability, we are also more secure against common bugs that occour when handling multiple temporary variables, that are in this case not even able to be const, as they needs to be modified inside of loops where we specified the iteration lengths ourselves.
+
+
