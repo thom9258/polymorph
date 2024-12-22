@@ -9,19 +9,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
-#-------------------------------------------------------------------------
-# Fetch Polymorph
-# ------------------------------------------------------------------------
-
-message(STATUS "Including Polymorph")
-FetchContent_Declare(polymorph
-  GIT_REPOSITORY git@github.com:thom9258/polymorph.git
-  GIT_TAG main
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-)
-FetchContent_MakeAvailable(polymorph)
-
 message(STATUS "Including Libtester")
 FetchContent_Declare(libtester
   GIT_REPOSITORY git@github.com:thom9258/libtester.git
@@ -31,5 +18,7 @@ FetchContent_Declare(libtester
 )
 FetchContent_MakeAvailable(libtester)
 
+add_subdirectory(../ polymorph)
+
 add_executable(${PROJECT_NAME} test.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE polymorph libtester)
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph libtester)
