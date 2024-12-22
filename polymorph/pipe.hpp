@@ -32,6 +32,11 @@ public:
     {
         return rhs_.process(lhs_.process(v));
     }
+    template<typename V>
+    constexpr decltype(auto) process(V&& v) const noexcept
+    {
+        return rhs_.process(lhs_.process(std::forward<V>(v)));
+    }
 };
 
 template<concepts::Pipe Pipe, concepts::Collection Collection>
