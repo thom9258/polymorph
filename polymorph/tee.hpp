@@ -18,8 +18,9 @@ public:
     template<typename V>
     constexpr decltype(auto) process(const V& v) const noexcept
     {
-		other_.process(v);
-        return v;
+		std::remove_cvref_t<V> copy = v;
+		other_.process(copy);
+        return copy;
     }
 };
 	
@@ -30,15 +31,6 @@ tee_t<Pipe> tee(Pipe&& other) noexcept
 	return tee_t<Pipe>(std::forward<Pipe>(other));
 }
 	
-#if 0
-template <concepts::Pipe Pipe>
-[[nodiscard]] constexpr
-tee_t<Pipe> tee(Pipe& other) noexcept
-{
-	return tee_t<Pipe>(other);
-}
-#endif	
-
 template <concepts::Pipe Pipe>
 [[nodiscard]] constexpr
 tee_t<Pipe> tee(const Pipe& other) noexcept

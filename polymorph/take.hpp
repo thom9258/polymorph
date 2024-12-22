@@ -1,6 +1,7 @@
 #pragma once
 
 #include "detail.hpp"
+#include <iostream>
 
 namespace polymorph
 {
@@ -17,8 +18,10 @@ public:
 		-> std::remove_cvref_t<V>
     {
 		std::remove_cvref_t<V> out{};
-		out.reserve((count_ < v.size()) ? count_ : v.size());
-		for (size_t i = 0; i < out.size(); i++)
+		const size_t take_count = (count_ < v.size()) ? count_ : v.size();
+		std::cout << "taking: " << take_count << std::endl;
+		out.reserve(take_count);
+		for (size_t i = 0; i < take_count; i++)
 			out.push_back(v[i]);
         return out;
     }

@@ -20,7 +20,7 @@ public:
 	explicit enumerate_t() {}
 
     template<typename V>
-    constexpr decltype(auto) process(const V& v) const noexcept
+    decltype(auto) process(const V& v) const noexcept
     {
 		std::vector<enumerated<typename V::value_type>> out{};
 		out.reserve(v.size());
@@ -31,7 +31,7 @@ public:
     }
 };
 	
-[[nodiscard]] constexpr
+[[nodiscard]] 
 enumerate_t enumerate() noexcept
 {
 	return enumerate_t();

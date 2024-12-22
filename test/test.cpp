@@ -195,27 +195,6 @@ void test_enumerate()
 							 "2) Ash"}));
 }
 
-
-#if 0
-
-const auto stringify_person_tup = [&stringify_person] (const Person& person) 
-	-> std::string
-{
-	const auto& [name, age, gender] = person;
-	return stringify_person(name, age, gender);
-};
-
-void test_apply()
-{
-	const auto stringified_people_tup = people >>= polymorph::transform(stringify_person_tup);
-	stringified_people_tup >>= polymorph::stream(std::cout, "\n", "\n");
-	
-	const auto stringified_people = people >>= polymorph::apply(stringify_person);
-	stringified_people >>= polymorph::stream(std::cout, "\n", "\n");
-}
-#endif
-
-
 void test_tee()
 {
 	numbers >>= polymorph::stream(std::cout, " ", "\n");
@@ -229,6 +208,25 @@ void test_tee()
 	
 	TEST(ss.str() == "2 4 6 8 10 12");
 	std::cout << ss.str() << std::endl;
+}
+
+void test_tee_directly_to_stream_should_not_cause_exceptions()
+{
+	numbers >>= polymorph::stream(std::cout, " ", "\n");
+	std::stringstream ss{};
+	
+	const auto plus10 = numbers >>= polymorph::transform(add5)
+		                        >>= polymorph::transform(add5)
+		                        >>= polymorph::tee(polymorph::stream(ss, " ", ""));
+	
+	TEST(ss.str() == "11 12 13 14 15 16");
+	std::cout << ss.str() << std::endl;
+	
+	const auto plus10again = numbers
+		>>= polymorph::transform(add5)
+		>>= polymorph::transform(add5)
+		>>= polymorph::tee(polymorph::stream(std::cout, " ", "\n"));
+	
 }
 
 void test_partition()
@@ -279,7 +277,7 @@ void test_take()
 	halfmult2 >>= polymorph::stream(std::cout, " ", "\n");
 	TEST(compare_vectors(halfmult2, std::vector<int>{2, 4, 6}));
 	
-	const auto more = numbers >>= polymorph::take(numbers.size()*2)
+	const auto more = numbers >>= polymorph::take(12)
 		                      >>= polymorph::tee(polymorph::stream(std::cout, " ", "\n"));
 	TEST(compare_vectors(more, std::vector<int>{1, 2, 3, 4, 5, 6}));
 }
@@ -297,6 +295,7 @@ int main(int argc, char** argv)
     TEST_UNIT(test_simple_enumerate_printing());
     TEST_UNIT(test_enumerate());
     TEST_UNIT(test_tee());
+    TEST_UNIT(test_tee_directly_to_stream_should_not_cause_exceptions());
     TEST_UNIT(test_partition());
     TEST_UNIT(test_assign());
     TEST_UNIT(test_take());
