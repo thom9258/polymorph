@@ -339,6 +339,41 @@ void test_fuse2()
 	      >>= polymorph::stream(std::cout, "\n", "");
 }
 
+void test_fold_left()
+{
+	const std::vector<std::string> names = {"Alex", "Alice", "Ash"};
+	const std::vector<int> ages = {35, 24, 17};
+	using Person = std::tuple<std::string, int>;
+	
+	const auto stringify_person = [] (const Person& person) 
+		-> std::string
+	{
+		const auto& [name, age] = person;
+		std::stringstream ss{};
+		ss << "Person " << name << " is aged " << age;
+		return ss.str();
+	};
+	
+	const auto eldest_person = [] (const Person& lhs, const Person& rhs) 
+		-> Person
+	{
+		if (std::get<1>(lhs) < std::get<1>(rhs))
+			return rhs;
+		return lhs;
+	};
+
+	const auto people = names >>= polymorph::fuse1(ages);
+	people >>= polymorph::transform(stringify_person)
+		   >>= polymorph::stream(std::cout, "\n", "\n");
+	
+	const auto youngest = Person{"?", 0};
+	const auto eldest = people >>= polymorph::fold_left(eldest_person, youngest);
+	std::cout << "Eldest person: " << stringify_person(eldest) << std::endl;
+	TEST(std::get<0>(eldest) == "Alex");
+	TEST(std::get<1>(eldest) == 35);
+}
+
+
 
 
 
@@ -360,6 +395,7 @@ int main(int argc, char** argv)
     TEST_UNIT(test_take());
     TEST_UNIT(test_fuse1());
     TEST_UNIT(test_fuse2());
+    TEST_UNIT(test_fold_left());
 
     ltcontext_end();
 	return 0;
