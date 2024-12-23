@@ -2,6 +2,7 @@
 #include "detail.hpp"
 #include "enumerate.hpp"
 #include "filter.hpp"
+#include "fuse.hpp"
 #include "pipe.hpp"
 #include "stream.hpp"
 #include "tee.hpp"

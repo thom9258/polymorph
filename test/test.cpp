@@ -282,6 +282,65 @@ void test_take()
 	TEST(compare_vectors(more, std::vector<int>{1, 2, 3, 4, 5, 6}));
 }
 
+void test_fuse1()
+{
+	const std::vector<std::string> names = {"Alex", "Alice", "Ash"};
+	numbers >>= polymorph::stream(std::cout, " ", "\n");
+	names >>= polymorph::stream(std::cout, " ", "\n");
+	const auto indexed_names = numbers >>= polymorph::fuse1(names);
+
+	const auto print_indexed_name = [] (std::tuple<int, std::string> iname) {
+		std::cout << "name(" << std::get<0>(iname) << "): " << std::get<1>(iname) << std::endl;
+		return iname;
+	};
+
+	const auto _ignore = indexed_names >>= polymorph::transform(print_indexed_name);
+	
+	const std::vector<char> reverse_charindices = {
+		'9', '8', '7', '6', '5', '4', '3', '2', '1', '0'
+	};
+
+	const auto stringify = [] (std::tuple<int, char> ic) {
+		std::stringstream ss{};
+		ss << std::get<0>(ic) << "-" << std::get<1>(ic);
+		return ss.str();
+	};
+
+	std::stringstream ss{};
+	numbers >>= polymorph::fuse1(reverse_charindices)
+		    >>= polymorph::transform(stringify)
+		    >>= polymorph::stream(ss, " ", "");
+
+	std::cout << ss.str() << std::endl;
+	TEST(ss.str() == "1-9 2-8 3-7 4-6 5-5 6-4");
+}
+
+void test_fuse2()
+{
+	const std::vector<std::string> names = {"Alex", "Alice", "Ash"};
+	const std::vector<int> ages = {35, 24, 17};
+	const std::vector<bool> gets_bonuses = {false, true, true};
+	using Employee = std::tuple<std::string, int, bool>;
+	
+	const auto generate_bonus_log = [] (const Employee& employee) 
+		-> std::string
+	{
+		const auto& [name, age, gets_bonus] = employee;
+		
+		const std::string bonus_msg = gets_bonus ? " is valid for getting a christmas bonus!"
+			                                     : " sadly does not get a bonus this year..";
+		std::stringstream ss{};
+		ss << "Employee " << name << ", aged " << age << bonus_msg;
+		return ss.str();
+	};
+
+	names >>= polymorph::fuse2(ages, gets_bonuses)
+	      >>= polymorph::transform(generate_bonus_log)
+	      >>= polymorph::stream(std::cout, "\n", "");
+}
+
+
+
 
 int main(int argc, char** argv)
 {
@@ -299,6 +358,8 @@ int main(int argc, char** argv)
     TEST_UNIT(test_partition());
     TEST_UNIT(test_assign());
     TEST_UNIT(test_take());
+    TEST_UNIT(test_fuse1());
+    TEST_UNIT(test_fuse2());
 
     ltcontext_end();
 	return 0;
