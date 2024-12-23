@@ -22,10 +22,6 @@ namespace concepts {
 template<typename T>
 concept Pipe = std::derived_from<std::remove_cvref_t<T>, traits::pipe_tag>;
 
-// TODO: figure out if it is nessecary to specify an identical pipe concept for composing
-template<typename T>
-concept Pipe2 = std::derived_from<std::remove_cvref_t<T>, traits::pipe_tag>;
-
 template<class C>
 concept Collection = requires(C c, size_t i) {
 	c.size();

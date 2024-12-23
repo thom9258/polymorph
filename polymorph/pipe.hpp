@@ -10,7 +10,7 @@ namespace polymorph
  * Pipes are composed left-to-right, as can be seen in the construction of this class,
  * This can also be noted in the _compose_t::process() function.
 */
-template <concepts::Pipe Lhs, concepts::Pipe2 Rhs>
+template <concepts::Pipe Lhs, concepts::Pipe Rhs>
 class _compose_t : public traits::pipe_tag
 {
 	Lhs lhs_;
@@ -53,7 +53,7 @@ decltype(auto) operator>>=(Collection&& collection, const Pipe& pipe) noexcept
 	return pipe.process(std::forward<Collection>(collection));
 }
 	
-template <concepts::Pipe Lhs, concepts::Pipe2 Rhs>
+template <concepts::Pipe Lhs, concepts::Pipe Rhs>
 [[nodiscard]] constexpr
 decltype(auto) operator>>=(Lhs&& lhs, Rhs&& rhs) noexcept
 {
@@ -61,7 +61,7 @@ decltype(auto) operator>>=(Lhs&& lhs, Rhs&& rhs) noexcept
 								std::forward<Rhs>(rhs));
 }
 	
-template <concepts::Pipe Lhs, concepts::Pipe2 Rhs>
+template <concepts::Pipe Lhs, concepts::Pipe Rhs>
 [[nodiscard]] constexpr
 decltype(auto) operator>>=(const Lhs& lhs, const Rhs& rhs) noexcept
 {
