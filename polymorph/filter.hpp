@@ -45,7 +45,7 @@ filter_t<P> filter(P&& p) noexcept
 }
 	
 
-template <typename P, concepts::Pipe OkPipe, concepts::Pipe2 NokPipe>
+template <typename P, concepts::Pipe OkPipe, concepts::Pipe NokPipe>
 class partition_t : public traits::pipe_tag
 {
 	P p_;
@@ -77,7 +77,7 @@ public:
     }
 };
 	
-template <typename P, concepts::Pipe OkPipe, concepts::Pipe2 NokPipe>
+template <typename P, concepts::Pipe OkPipe, concepts::Pipe NokPipe>
 [[nodiscard]] constexpr
 partition_t<P, OkPipe, NokPipe> partition(P&& p, OkPipe&& ok_pipe, NokPipe&& nok_pipe) noexcept
 {
@@ -86,7 +86,7 @@ partition_t<P, OkPipe, NokPipe> partition(P&& p, OkPipe&& ok_pipe, NokPipe&& nok
 										   std::forward<NokPipe>(nok_pipe));
 }
 	
-template <typename P, concepts::Pipe OkPipe, concepts::Pipe2 NokPipe>
+template <typename P, concepts::Pipe OkPipe, concepts::Pipe NokPipe>
 [[nodiscard]] constexpr
 partition_t<P, OkPipe, NokPipe> partition(P&& p, OkPipe& ok_pipe, NokPipe& nok_pipe) noexcept
 {

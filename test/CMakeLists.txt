@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
-message(STATUS "Including Libtester")
+message(STATUS "Fetching Libtester")
 FetchContent_Declare(libtester
   GIT_REPOSITORY git@github.com:thom9258/libtester.git
   GIT_TAG main
@@ -18,6 +18,7 @@ FetchContent_Declare(libtester
 )
 FetchContent_MakeAvailable(libtester)
 
+message(STATUS "Adding polymorph")
 add_subdirectory(../ polymorph)
 
 add_executable(${PROJECT_NAME} test.cpp)
