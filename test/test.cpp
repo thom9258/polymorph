@@ -142,10 +142,9 @@ const std::vector<Person> people {
 	Person{"Po", 24, true},
 };
 
-const auto stringify_person = [] (const std::string& name,
-								  const size_t age,
-								  const bool gender) 
-	-> std::string
+std::string stringify_person(const std::string& name,
+							 const size_t age,
+							 const bool gender) 
 {
 	std::stringstream ss;
 	ss << "Person: " << name 
@@ -159,19 +158,19 @@ void test_enumerate()
 	const auto is_male = [] (const polymorph::enumerated<Person>& person)
 		-> bool 
 	{
-		return std::get<2>(person.value) == true; 
+		return std::get<2>(person.value()) == true; 
 	};
 	const auto is_over_30 = [] (const polymorph::enumerated<Person>& person)
 		-> bool 
 	{
-		return std::get<1>(person.value) > 30; 
+		return std::get<1>(*person) > 30; 
 	};
 
 	using indexed_name = std::tuple<size_t, std::string>;
 	const auto take_indexed_name = [] (const polymorph::enumerated<Person>& person) 
 		-> indexed_name
 	{
-		return {person.index, std::get<0>(person.value)};
+		return {person.index(), std::get<0>(person.value())};
 	};
 	const auto stringify_indexed_name = [] (const indexed_name& indexed_name) 
 		-> std::string

@@ -7,11 +7,28 @@ namespace polymorph
 {
 
 template<typename V>
-struct enumerated
+class enumerated
 {
-	enumerated(size_t index, V value) : index(index), value(value) {}
-	size_t index;
-	V value;
+public:
+	explicit enumerated(const size_t index, V&& value) 
+		: m_index(index), m_value(std::move(value)) 
+	{
+	}
+
+	explicit enumerated(const size_t index, const V& value) 
+		: m_index(index), m_value(value) 
+	{
+	}
+
+	size_t index() const noexcept {return m_index; }
+	decltype(auto) value() const noexcept {return m_value; }
+	decltype(auto) value() noexcept {return m_value; }
+	decltype(auto) operator*() const noexcept {return value(); }
+	decltype(auto) operator*() noexcept {return value(); }
+	
+private:
+	size_t m_index;
+	V m_value;
 };
 	
 class enumerate_t : public traits::pipe_tag
