@@ -1,6 +1,6 @@
 #pragma once
 
-#include "detail.hpp"
+#include "utils.hpp"
 #include "pipe.hpp"
 
 namespace polymorph
@@ -23,8 +23,8 @@ public:
     decltype(auto) process(const V& v) const noexcept
     {
 		std::vector<enumerated<typename V::value_type>> out{};
-		out.reserve(v.size());
-		for (size_t i = 0; i < v.size(); i++)
+		utils::collection_reserve_additional(out, utils::collection_length(v));
+		for (size_t i = 0; i < utils::collection_length(v); i++)
 			out.emplace_back(i, v[i]);
 
         return out;
@@ -50,9 +50,9 @@ public:
 		-> std::vector<std::invoke_result_t<F, size_t, typename V::value_type>>
     {
 		std::vector<std::invoke_result_t<F, size_t, typename V::value_type>> out{};
-		out.reserve(v.size());
-		for (size_t i = 0; i < v.size(); i++)
-			out.push_back(std::invoke(f_, i, v[i]));
+		utils::collection_reserve_additional(out, utils::collection_length(v));
+		for (size_t i = 0; i < utils::collection_length(v); i++)
+			utils::collection_append(out, std::invoke(f_, i, v[i]));
 
         return out;
     }

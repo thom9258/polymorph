@@ -19,9 +19,9 @@ public:
 		-> std::vector<std::invoke_result_t<F, typename V::value_type>>
     {
 		std::vector<std::invoke_result_t<F, typename V::value_type>> out{};
-		out.reserve(v.size());
-		for (size_t i = 0; i < v.size(); i++)
-			out.push_back(std::invoke(f_, v[i]));
+		utils::collection_reserve_additional(out, utils::collection_length(v));
+		for (size_t i = 0; i < utils::collection_length(v); i++)
+			utils::collection_append(out, std::invoke(f_, v[i]));
 
         return out;
     }

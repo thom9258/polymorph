@@ -1,6 +1,7 @@
 #pragma once
 
 #include "detail.hpp"
+#include "utils.hpp"
 
 #include <tuple>
 
@@ -20,7 +21,7 @@ public:
     {
 		std::vector<std::tuple<typename V::value_type, typename C::value_type>> out{};
 		const auto size = v.size() < c_.size() ? v.size() : c_.size();
-		out.reserve(size);
+		utils::collection_reserve_additional(out, size);
 		for (size_t i = 0; i < size; i++)
 			out.emplace_back(v[i], c_[i]);
 
@@ -51,9 +52,9 @@ public:
 		std::vector<std::tuple<typename V::value_type,
 							   typename C1::value_type,
 							   typename C2::value_type>> out{};
-		const auto _size = c1_.size() < c2_.size() ? c1_.size() : c2_.size();
-		const auto size = v.size() < _size ? v.size() : _size;
-		out.reserve(size);
+		const size_t _size = c1_.size() < c2_.size() ? c1_.size() : c2_.size();
+		const size_t size = v.size() < _size ? v.size() : _size;
+		utils::collection_reserve_additional(out, size);
 		for (size_t i = 0; i < size; i++)
 			out.emplace_back(v[i], c1_[i], c2_[i]);
 
