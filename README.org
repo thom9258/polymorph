@@ -61,27 +61,27 @@ target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
 
 You are tasked with investigating a function deep in your codebase, you see this:
 #+begin_src cpp
-std::vector<indexed_person>> males_over_30{};                // (1)
-for (size_t i = 0; i < people.size(); i++) {                 // (2)
-    if (!is_male(people[i]) && !is_over_30(people[i])))      // (3)
+std::vector<indexed_person>> indexed_males_over_30{};               // (1)
+for (size_t i = 0; i < people.size(); i++) {                        // (2)
+    if (!is_male(people[i]) && !is_over_30(people[i])))             // (3)
 	    continue;
-	males_over_30.push_back({i, people[i].name});
+	indexed_males_over_30.push_back({i, people[i].name});
 }
 
-for (size_t i = 0; i < males_over_30.size(); i++) {          // (1)
-    std::cout << stringify_indexed_name(males_over_30[i]);   // (4)
-	if (i < males_over_30.size()-1)                          // (5)
+for (size_t i = 0; i < indexed_males_over_30.size(); i++) {         // (1)
+    std::cout << stringify_indexed_name(indexed_males_over_30[i]);  // (4)
+	if (i < indexed_males_over_30.size()-1)                         // (5)
 	    std::cout << ", ";
 }
 std::cout << "\n";
-return males_over_30;
+return indexed_males_over_30;
 #+end_src
 
 Immediately a series of problems can be identified with this approach:
 1. A non-const collection is created before-hand, and it is required to specify its type
-2. We are manually iterating a collection based on its size
-3. Core filtering logic, the most important part of this function is deeply embedded in iteration and branching
-4. The output of this function (streaming to std::cout) is scattered to 3 different locations
+2. Manual iteration of a collection based on its size
+3. Core business logic is deeply embedded in-between iteration and branching
+4. The side-effect output (streaming to std::cout) is scattered to 3 different locations
 5. Manual handling is required to omit the last seperator to return
    
 The polymorph solution adresses all 5 problems:
@@ -89,11 +89,13 @@ The polymorph solution adresses all 5 problems:
 const auto indexed_males_over_30 = people >>= polymorph::enumerate()
                                           >>= polymorph::filter(is_male)
                                           >>= polymorph::filter(is_over_30)
-                                          >>= polymorph::transform(take_indexed_name)
-                                          >>= polymorph::transform(stringify_indexed_name);
+                                          >>= polymorph::transform(take_indexed_name);
 
-indexed_males_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
+indexed_males_over_30 >>= polymorph::transform(stringify_indexed_name)
+                      >>= polymorph::to_stream(std::cout, ", ", "\n");
+
+return indexed_males_over_30;
 #+end_src
 
 In 'polymorph', complex looping, filtering, temporary variable creation is condensed down to a simple series of individual commands.
-Maintanence and modification is as trivial as adding, removing or modifying a step in the pipeline.
+'polymorph' makes maintanence & understandability easier, and modification is as trivial as adding, removing or modifying a step in the pipeline.
