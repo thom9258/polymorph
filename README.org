@@ -3,11 +3,10 @@
 A tiny, easy to use functional piping library.
 
 #+begin_src cpp
-const auto male_names_over_30 = people >>= polymorph::filter(is_male)
-                                       >>= polymorph::filter(is_over_30)
-                                       >>= polymorph::transform(take_name);
-
-male_names_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
+numbers >>= polymorph::filter(is_even)
+        >>= polymorph::transform(multiply_by_3);
+        >>= polymorph::transform(subtract_1)
+        >>= polymorph::to_stream(std::cout, " ", "\n");
 #+end_src
 
 This library explores a functional oriented approach to manage and modify collections with a piping syntax.
