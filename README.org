@@ -2,12 +2,6 @@
 
 A tiny, easy to use functional piping library.
 
-** Why
-This library explores a functional oriented approach to managing and modifying collections.
-'polymorph' provides a functional-style piping syntax, in order to express complex data transformation as sequential steps.
-The resulting code becomes clean and easy to understand, compared to large & obfuscated loop constructs by leveraging standardized higher-order functions that are highly composeable using simple sub-algorithms and predicates.
-
-A simple example, given a collection of people, collect the names of all males over 30 and print them.
 #+begin_src cpp
 const auto male_names_over_30 = people >>= polymorph::filter(is_male)
                                        >>= polymorph::filter(is_over_30)
@@ -16,11 +10,12 @@ const auto male_names_over_30 = people >>= polymorph::filter(is_male)
 male_names_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
 #+end_src
 
-** How to Install
-   
-*** FetchContent_Declare
-For a quick setup, simply fetch using:
+This library explores a functional oriented approach to manage and modify collections with a piping syntax.
+Use 'polymorph' to structure complex data transformations in simple & readable steps, compared to large & obfuscated loop constructs, by leveraging standardized & composeable higher-order functions with simple sub-algorithms and predicates.
 
+** Quick Setup
+
+For a quick setup using cmake, simply fetch using:
 #+begin_src cmake
 include(FetchContent)
 message(STATUS "Fetching polymorph")
@@ -34,25 +29,9 @@ FetchContent_MakeAvailable(polymorph)
 target_link_libraries(${PROJECT_NAME} PRIVATE polymorph)
 #+end_src
 
-*** add_subdirectory()
-Alternatively, the package can be cloned manually:
+** Install
 
-#+begin_src bash
-cd path/to/your/project
-mkdir thirdparty
-cd thirdparty
-git clone git@github.com:thom9258/polymorph.git
-#+end_src
-
-Then in your CMakeLists.txt, add
-#+begin_src cmake
-add_subdirectory(../thirdparty/polymorph)
-target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
-#+end_src
-
-*** find_package()
-
-the package can be installed by:
+The package can be installed by:
 #+begin_src bash
 cd path/to/thirdparty/libraries
 git clone git@github.com:thom9258/polymorph.git
@@ -78,57 +57,43 @@ find_package(polymorph
 target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
 #+end_src
 
-*** Example
-*Problem:*
-You are given a collection of people, and are tasked with:
-1. Find all males that are older than 30
-2. Remember their original indexes in the collection
-3. Remove information, so only the original information and their names are kept
-3. Store and print the resulting sub-collection
-   
-Initially, this problem would be solveable by simply iterating through the collection of people:
-#+begin_src cpp
-// PROBLEM: non-const temporary variable
-std::vector<indexed_person>> males_over_30{};
-// PROBLEM: error-prone usage of index
-for (size_t i = 0; i < people.size(); i++) {
-    // PROBLEM: conditional branching based on multiple-cases in if
-    if (!is_male(people[i]) && !is_over_30(people[i])))
-	    continue;
-    // PROBLEM: modification of values in another place
-	males_over_30.push_back({i, people[i]});
-	
+*** Why Use Polymorph
 
-// PROBLEM: error-prone useage of index
-for (size_t i = 0; i < males_over_30.size(); i++) {
-    std::cout << stringify_indexed_name(males_over_30[i]);
-	// PROBLEM: manual handling to omit the trailing seperator
-	// PROBLEM: error-prone extensive logic using both index and size-based values
-	if (i < males_over_30.size()-1)
-	    << ", ";
+You are tasked with investigating a function deep in your codebase, you see this:
+#+begin_src cpp
+std::vector<indexed_person>> males_over_30{};                // (1)
+for (size_t i = 0; i < people.size(); i++) {                 // (2)
+    if (!is_male(people[i]) && !is_over_30(people[i])))      // (3)
+	    continue;
+	males_over_30.push_back({i, people[i].name});
 }
-// PROBLEM: multiple printing locations
+
+for (size_t i = 0; i < males_over_30.size(); i++) {          // (1)
+    std::cout << stringify_indexed_name(males_over_30[i]);   // (4)
+	if (i < males_over_30.size()-1)                          // (5)
+	    std::cout << ", ";
+}
 std::cout << "\n";
+return males_over_30;
 #+end_src
 
-But suddently, a new criteria is found for the algorithm, maybe another algorithm needs to be created that does the same, but looks for females under 50 instead.
-A simple solution to the problem suddently grows in complexity, deviates in requirements and are now considered really complex to maintain as you would need to enforce new tests to ensure the logic still works.
-
-The solution using composition of simple filters and transforms:
+Immediately a series of problems can be identified with this approach:
+1. A non-const collection is created before-hand, and it is required to specify its type
+2. We are manually iterating a collection based on its size
+3. Core filtering logic, the most important part of this function is deeply embedded in iteration and branching
+4. The output of this function (streaming to std::cout) is scattered to 3 different locations
+5. Manual handling is required to omit the last seperator to return
+   
+The polymorph solution adresses all 5 problems:
 #+begin_src cpp
 const auto indexed_males_over_30 = people >>= polymorph::enumerate()
-	                                      >>= polymorph::filter(is_male)
-	                                      >>= polymorph::filter(is_over_30)
-	                                      >>= polymorph::transform(take_indexed_name)
-	                                      >>= polymorph::transform(stringify_indexed_name);
+                                          >>= polymorph::filter(is_male)
+                                          >>= polymorph::filter(is_over_30)
+                                          >>= polymorph::transform(take_indexed_name)
+                                          >>= polymorph::transform(stringify_indexed_name);
 
 indexed_males_over_30 >>= polymorph::to_stream(std::cout, ", ", "\n");
 #+end_src
 
-When a new sorting requirement is set, or a slight deviation in logic occours, changing the original algorithm becomes trivial.
-All you need to do is just add another transform, modify a filter, and you are good to go. 
-The code is by definiton also more explicit and self-documenting compared to a traditional iteration. You would be required to know the name of the function that iteration is inside of, or look for comments & documentation to explicitly tell you that we are reducing a collection into males over 30.
-With composed pipes, this becomes trivial, the code loudly explains that we are taking elements based on some criteria, and transforming them according to the functions provided.
-In addition to readability, we are also more secure against common bugs that occour when handling multiple temporary variables, that are in this case not even able to be const, as they needs to be modified inside of loops where we specified the iteration lengths ourselves.
-
-
+In 'polymorph', complex looping, filtering, temporary variable creation is condensed down to a simple series of individual commands.
+Maintanence and modification is as trivial as adding, removing or modifying a step in the pipeline.

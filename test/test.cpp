@@ -9,6 +9,15 @@
 
 const std::vector<int> numbers = {1,2,3,4,5,6};
 
+void test_utils()
+{
+	TEST(polymorph::utils::collection_length(numbers) == numbers.size());
+}
+
+
+
+
+
 const auto multiply2 = [] (const int i) { return i*2; };
 const auto add5 = [] (const int i) { return i+5; };
 const auto is_even = [] (const int i) { return i % 2 == 0; };
@@ -379,6 +388,8 @@ void test_fold_left()
 int main(int argc, char** argv)
 {
     ltcontext_begin(argc, argv);
+
+    TEST_UNIT(test_utils());
 
     TEST_UNIT(test_stream_correctly_omits_trailing_seperator_compared_to_simple_for_print());
     TEST_UNIT(test_transform());
