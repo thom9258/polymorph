@@ -67,7 +67,7 @@ for (size_t i = 0; i < people.size(); i++) {                        // (2)
 	indexed_males_over_30.push_back({i, people[i].name});
 }
 
-for (size_t i = 0; i < indexed_males_over_30.size(); i++) {         // (1)
+for (size_t i = 0; i < indexed_males_over_30.size(); i++) {         // (2)
     std::cout << stringify_indexed_name(indexed_males_over_30[i]);  // (4)
     if (i < indexed_males_over_30.size()-1)                         // (5)
 	    std::cout << ", ";
