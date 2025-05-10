@@ -116,10 +116,16 @@ cmake --build . --config Release --target install -- -j $(nproc)
 
 Then, in your CMakeLists.txt, the package can be found using:
 #+begin_src cmake
-find_package(polymorph
-    CONFIG REQUIRED
-    PATHS "../build/install" NO_DEFAULT_PATH)
+find_package(polymorph CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+#+end_src
 
+If a custom install prefix was used, the find_package must reflect this:
+
+
+#+begin_src cmake
+find_package(polymorph CONFIG REQUIRED
+    PATHS "../build/install" NO_DEFAULT_PATH)
 target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
 #+end_src
 
