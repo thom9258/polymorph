@@ -14,10 +14,6 @@ void test_utils()
 	TEST(polymorph::utils::collection_length(numbers) == numbers.size());
 }
 
-
-
-
-
 const auto multiply2 = [] (const int i) { return i*2; };
 const auto add5 = [] (const int i) { return i+5; };
 const auto is_even = [] (const int i) { return i % 2 == 0; };
