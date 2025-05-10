@@ -40,8 +40,8 @@ stream_t<Seperator, Ender>
 stream(std::ostream& os, Seperator&& seperator, Ender&& ender) noexcept
 {
 	return stream_t<Seperator, Ender>(os, 
-										 std::forward<Seperator>(seperator),
-										 std::forward<Ender>(ender));
+									  std::forward<Seperator>(seperator),
+									  std::forward<Ender>(ender));
 }
 	
 template <typename Seperator>

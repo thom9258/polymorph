@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils.hpp"
 #include "detail.hpp"
 #include "pipe.hpp"
 
@@ -12,6 +13,7 @@ class transform_t : public traits::pipe_tag
 	F f_;
 
 public:
+	explicit transform_t(const F& f) : f_(f) {}
 	explicit transform_t(F&& f) : f_(std::forward<F>(f)) {}
 
     template<typename V>
