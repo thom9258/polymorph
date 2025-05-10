@@ -3,16 +3,18 @@
 A tiny, easy to use functional piping library.
 
 #+begin_src cpp
-numbers >>= polymorph::filter(is_even)
-        >>= polymorph::transform(multiply_by_3);
-        >>= polymorph::transform(subtract_1)
-        >>= polymorph::to_stream(std::cout, " ", "\n");
+	const std::vector<int> numbers = {1,2,3,4,5,6};
+	numbers 
+		>>= polymorph::filter(is_even)
+		>>= polymorph::transform(multiply_by_3)
+		>>= polymorph::transform(subtract_1)
+		>>= polymorph::to_stream(std::cout, " ", "\n");
 #+end_src
 
 This library explores a functional oriented approach to manage and modify collections with a piping syntax.
 Use 'polymorph' to structure complex data transformations in simple & readable steps, compared to large & obfuscated loop constructs, by leveraging standardized & composeable higher-order functions with simple sub-algorithms and predicates.
 
-** Quick Setup
+* Quick Setup in CMake 
 
 For a quick setup using cmake, simply fetch using:
 #+begin_src cmake
@@ -25,38 +27,10 @@ FetchContent_Declare(polymorph
     GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(polymorph)
-target_link_libraries(${PROJECT_NAME} PRIVATE polymorph)
-#+end_src
-
-** Install
-
-The package can be installed by:
-#+begin_src bash
-cd path/to/thirdparty/libraries
-git clone git@github.com:thom9258/polymorph.git
-cd polymorph
-mkdir build
-cd build
-cmake ..
-cmake --build . --config Release --target install -- -j $(nproc)
-#+end_src
-
-alternatively, a custom install-prefix can be specified:
-#+begin_src bash
-cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/your/installation/path
-cmake --build . --config Release --target install -- -j $(nproc)
-#+end_src
-
-Then, in your CMakeLists.txt, the package can be found using:
-#+begin_src cmake
-find_package(polymorph
-    CONFIG REQUIRED
-    PATHS "../build/install" NO_DEFAULT_PATH)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
 #+end_src
 
-*** Why Use Polymorph
+* Why Use Polymorph
 
 You are tasked with investigating a function deep in your codebase, you see this:
 #+begin_src cpp
@@ -98,3 +72,89 @@ return indexed_males_over_30;
 
 In 'polymorph', complex looping, filtering, temporary variable creation is condensed down to a simple series of individual commands.
 'polymorph' makes maintanence & understandability easier, and modification is as trivial as adding, removing or modifying a step in the pipeline.
+
+* Additional Installation Methods
+
+** Include as a CMake Subdirectory
+   
+If you would like to keep the git repos as a local dependency, thus omitting the
+nessecity to fetch it when it is needed, simply clone the directory into your project:
+#+begin_src bash
+cd <YOUR-PROJECT>
+mkdir thirdparty
+cd thirdparty
+git clone git@github.com:thom9258/polymorph.git
+#+end_src
+
+Then, in your CMakeLists.txt:
+#+begin_src cmake
+message(STATUS "Adding polymorph subdirectory")
+add_subdirectory(<PATH>/<TO>/thirdparty/polymorph)
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+#+end_src
+
+** Install on the System
+
+The package can be installed by:
+#+begin_src bash
+cd ~
+mkdir libraries
+cd libraries
+git clone git@github.com:thom9258/polymorph.git
+cd polymorph
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release --target install -- -j $(nproc)
+#+end_src
+
+alternatively, a custom install-prefix can be specified:
+#+begin_src bash
+cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/your/installation/path
+cmake --build . --config Release --target install -- -j $(nproc)
+#+end_src
+
+Then, in your CMakeLists.txt, the package can be found using:
+#+begin_src cmake
+find_package(polymorph
+    CONFIG REQUIRED
+    PATHS "../build/install" NO_DEFAULT_PATH)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
+#+end_src
+
+
+** Conan Package Install on the System
+
+polymorph supports being built as a header-only conan package as-well, but is not part
+of the official conan packages.
+Because of this, the conan package needs to be built and installed manually.
+Ensure that you have conan2 installed on your system.
+#+begin_src bash
+cd ~
+mkdir libraries
+cd libraries
+git clone git@github.com:thom9258/polymorph.git
+cd polymorph
+conan create .
+#+end_src
+
+Then, in your project's conanfile.txt, simply add:
+#+begin_src
+[requires]
+polymorph/<INSTALLED-VERSION>
+
+[generators]
+CMakeToolchain
+CMakeDeps
+#+end_src
+
+Then, to build using your conan package:
+
+#+begin_src bash
+cd <YOUR-PROJECT>
+conan install . --output-folder=build --build=missing
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+#+end_src
