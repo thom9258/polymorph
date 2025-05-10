@@ -149,6 +149,13 @@ CMakeToolchain
 CMakeDeps
 #+end_src
 
+In your CMakeLists.txt you need to include the package by:
+
+#+begin_src cmake
+find_package(polymorph REQUIRED)
+target_link_libraries(${PROJECT_NAME} polymorph::polymorph)
+#+end_src
+
 Then, to build using your conan package:
 
 #+begin_src bash
