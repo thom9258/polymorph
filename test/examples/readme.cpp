@@ -9,9 +9,9 @@ void test_simple_example()
 	const std::vector<int> numbers = {1,2,3,4,5,6};
 	numbers 
 		>>= polymorph::filter(is_even)
-		>>= polymorph::transform(multiply_by_3)
+		>>= polymorph::transform(multiply_3)
 		>>= polymorph::transform(subtract_1)
-		>>= polymorph::to_stream(std::cout, " ", "\n");
+		>>= polymorph::stream(std::cout, " ", "\n");
 }
 
 

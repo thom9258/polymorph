@@ -8,7 +8,7 @@ A tiny, easy to use functional piping library.
 		>>= polymorph::filter(is_even)
 		>>= polymorph::transform(multiply_by_3)
 		>>= polymorph::transform(subtract_1)
-		>>= polymorph::to_stream(std::cout, " ", "\n");
+		>>= polymorph::stream(std::cout, " ", "\n");
 #+end_src
 
 This library explores a functional oriented approach to manage and modify collections with a piping syntax.
