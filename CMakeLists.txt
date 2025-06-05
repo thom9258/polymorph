@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(polymorph
-  VERSION 0.1.0
+  VERSION 1.1.0
   DESCRIPTION "Polymorph is a piping library designed as an alternative to for-loops."
   HOMEPAGE_URL "https://github.com/thom9258/polymorph/"
 )

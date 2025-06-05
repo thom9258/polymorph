@@ -14,7 +14,7 @@ from conan.tools.files import copy
 
 class conantestRecipe(ConanFile):
     name = "polymorph"
-    version = "1.0"
+    version = "1.1"
     package_type = "library"
     license = "<Put the package license here>"
     author = "Thomas Alexgaard Jensen"

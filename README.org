@@ -129,7 +129,6 @@ find_package(polymorph CONFIG REQUIRED
 target_link_libraries(${PROJECT_NAME} PRIVATE polymorph::polymorph)
 #+end_src
 
-
 ** Conan Package Install on the System
 
 polymorph supports being built as a header-only conan package as-well, but is not part
